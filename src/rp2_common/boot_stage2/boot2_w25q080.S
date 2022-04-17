@@ -7,6 +7,7 @@
 //              Also supports W25Q16JV (which has some different SR instructions)
 //              Also supports AT25SF081
 //              Also supports S25FL132K0
+//              Also supports GD25Q64C (when PICO_FLASH_USE_WRITE_STATUS2 is set)
 //
 // Description: Configures W25Q080 to run in Quad I/O continuous read XIP mode
 //
@@ -70,16 +71,13 @@
 
 // If defined, we will read status reg, compare to SREG_DATA, and overwrite
 // with our value if the SR doesn't match.
-// We do a two-byte write to SR1 (01h cmd) rather than a one-byte write to
-// SR2 (31h cmd) as the latter command isn't supported by WX25Q080.
-// This isn't great because it will remove block protections.
-// A better solution is to use a volatile SR write if your device supports it.
 #define PROGRAM_STATUS_REG
 
 #define CMD_WRITE_ENABLE 0x06
 #define CMD_READ_STATUS 0x05
 #define CMD_READ_STATUS2 0x35
 #define CMD_WRITE_STATUS 0x01
+#define CMD_WRITE_STATUS2 0x31
 #define SREG_DATA 0x02  // Enable quad-SPI mode
 
 // ----------------------------------------------------------------------------
@@ -170,6 +168,20 @@ program_sregs:
     ldr r1, [r3, #SSI_DR0_OFFSET]
 
     // Send status write command followed by data bytes
+#ifdef PICO_FLASH_SUPPORTS_WRITE_STATUS2
+    // Use 0x31 command to write 2nd byte of status register directly.
+    movs r1, #CMD_WRITE_STATUS2
+    str r1, [r3, #SSI_DR0_OFFSET]
+    str r2, [r3, #SSI_DR0_OFFSET]
+
+    bl wait_ssi_ready
+    ldr r1, [r3, #SSI_DR0_OFFSET]
+    ldr r1, [r3, #SSI_DR0_OFFSET]
+#else
+    // We do a two-byte write to SR1 (01h cmd) rather than a one-byte write to
+    // SR2 (31h cmd) as the latter command isn't supported by WX25Q080.
+    // This isn't great because it will remove block protections.
+    // A better solution is to use a volatile SR write if your device supports it.
     movs r1, #CMD_WRITE_STATUS
     str r1, [r3, #SSI_DR0_OFFSET]
     movs r0, #0
@@ -180,6 +192,7 @@ program_sregs:
     ldr r1, [r3, #SSI_DR0_OFFSET]
     ldr r1, [r3, #SSI_DR0_OFFSET]
     ldr r1, [r3, #SSI_DR0_OFFSET]
+#endif
 
     // Poll status register for write completion
 1:

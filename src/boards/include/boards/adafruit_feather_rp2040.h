@@ -74,11 +74,13 @@
 
 //------------- FLASH -------------//
 
-// Use slower generic flash access
-#define PICO_BOOT_STAGE2_CHOOSE_GENERIC_03H 1
+// Use fast QSPI flash mode. GD25Q64C needs 0x31 write status 2 command, but is
+// otherwise compatible with W25Q080
+#define PICO_BOOT_STAGE2_CHOOSE_W25Q080 1
+#define PICO_FLASH_SUPPORTS_WRITE_STATUS2 1
 
 #ifndef PICO_FLASH_SPI_CLKDIV
-#define PICO_FLASH_SPI_CLKDIV 4
+#define PICO_FLASH_SPI_CLKDIV 2
 #endif
 
 #ifndef PICO_FLASH_SIZE_BYTES
