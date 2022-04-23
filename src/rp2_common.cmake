@@ -40,7 +40,6 @@ function(pico_add_extra_outputs TARGET)
                 COMMENT "Symlinking from ${PICO_SYMLINK_ELF_AS_FILENAME} to ${TARGET}"
                 )
     endif ()
-    # PICO_CMAKE_CONFIG: PICO_NO_UF2, Disable UF2 output, type=bool, default=0, group=build
     if (NOT PICO_NO_UF2)
         pico_add_uf2_output(${TARGET})
     endif()
@@ -49,6 +48,8 @@ endfunction()
 add_subdirectory(common)
 add_subdirectory(rp2_common)
 
+# PICO_CMAKE_CONFIG: PICO_NO_UF2, Disable UF2 output, type=bool, default=0, group=build
+set(PICO_NO_UF2 OFF CACHE BOOL "Disable UF2 output")
 # PICO_CMAKE_CONFIG: PICO_NO_HARDWARE, OPTION: Whether the build is not targeting an RP2040 device,  type=bool, default=1 for PICO_PLATFORM=host 0 otherwise, group=build
 # PICO_BUILD_DEFINE: PICO_NO_HARDWARE, Whether the build is not targeting an RP2040 device,  type=bool, default=1 for PICO_PLATFORM=host 0 otherwise, group=build
 set(PICO_NO_HARDWARE "0" CACHE INTERNAL "")
