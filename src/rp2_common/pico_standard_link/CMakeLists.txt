@@ -94,4 +94,18 @@ if (NOT TARGET pico_standard_link)
         target_compile_options(pico_standard_link INTERFACE -ffunction-sections -fdata-sections)
         target_link_options(pico_standard_link INTERFACE "LINKER:--gc-sections")
     endif()
+
+    # Bootrom is mapped starting at address zero, and GCC 12 treats access to these
+    # low addresses as dereferences to a pointer derived from NULL, causing
+    # -Warray-bounds warnings/errors.  Setting the min-pagesize param to 0 tells
+    # the warnings to ignore that and allow accesses to these low addresses.
+    # See:
+    #   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105523
+    #   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104655
+    #   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
+    if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        if(CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL "11.3.0")
+            target_compile_options(pico_standard_link INTERFACE "--param=min-pagesize=0")
+        endif()
+    endif()
 endif()
