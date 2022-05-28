@@ -340,7 +340,7 @@ static inline uint8_t rp2040_rom_version(void) {
 /*! \brief No-op function for the body of tight loops
  *  \ingroup pico_platform
  *
- * Np-op function intended to be called by any tight hardware polling loop. Using this ubiquitously
+ * No-op function intended to be called by any tight hardware polling loop. Using this ubiquitously
  * makes it much easier to find tight loops, but also in the future \#ifdef-ed support for lockup
  * debugging might be added
  */
@@ -399,6 +399,29 @@ uint __get_current_exception(void);
 #ifdef __cplusplus
 }
 #endif
+
+/*! \brief Helper method to busy-wait for at least the given number of cycles
+ *  \ingroup pico_platform
+ *
+ * This method is useful for introducing very short delays.
+ *
+ * This method busy-waits in a tight loop for the given number of system clock cycles. The total wait time is only accurate to within 2 cycles,
+ * and this method uses a loop counter rather than a hardware timer, so the method will always take longer than expected if an
+ * interrupt is handled on the calling core during the busy-wait; you can of course disable interrupts to prevent this.
+ *
+ * You can use \ref clock_get_hz(clk_sys) to determine the number of clock cycles per second if you want to convert an actual
+ * time duration to a number of cycles.
+ *
+ * \param minimum_cycles the minimum number of system clock cycles to delay for
+ */
+static inline void busy_wait_at_least_cycles(uint32_t minimum_cycles) {
+    __asm volatile (
+        ".syntax unified\n"
+        "1: subs %0, #3\n"
+        "bcs 1b\n"
+        : "+r" (minimum_cycles) : : "memory"
+    );
+}
 
 #else // __ASSEMBLER__
 

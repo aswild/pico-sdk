@@ -9,16 +9,11 @@
 //       SHOULD ONLY CONSIST OF PREPROCESSOR DIRECTIVES
 // -----------------------------------------------------
 
-#ifndef _BOARDS_PIMORONI_PICOLIPO_4MB_H
-#define _BOARDS_PIMORONI_PICOLIPO_4MB_H
+#ifndef _BOARDS_GARATRONIC_PYBSTICK26_RP2040_H
+#define _BOARDS_GARATRONIC_PYBSTICK26_RP2040_H
 
 // For board detection
-#define PIMORONI_PICOLIPO_4MB
-
-// --- BOARD SPECIFIC ---
-#define PICOLIPO_USER_SW_PIN 23
-#define PICOLIPO_VBUS_DETECT_PIN 24
-#define PICOLIPO_BAT_SENSE_PIN 29
+#define GARATRONIC_PYBSTICK26_RP2040
 
 // --- UART ---
 #ifndef PICO_DEFAULT_UART
@@ -33,52 +28,58 @@
 
 // --- LED ---
 #ifndef PICO_DEFAULT_LED_PIN
-#define PICO_DEFAULT_LED_PIN 25
+#define PICO_DEFAULT_LED_PIN 23
 #endif
 // no PICO_DEFAULT_WS2812_PIN
 
 // --- I2C ---
 #ifndef PICO_DEFAULT_I2C
-#define PICO_DEFAULT_I2C 0
+#define PICO_DEFAULT_I2C 1 
 #endif
 #ifndef PICO_DEFAULT_I2C_SDA_PIN
-#define PICO_DEFAULT_I2C_SDA_PIN 4
+#define PICO_DEFAULT_I2C_SDA_PIN 6
 #endif
 #ifndef PICO_DEFAULT_I2C_SCL_PIN
-#define PICO_DEFAULT_I2C_SCL_PIN 5
+#define PICO_DEFAULT_I2C_SCL_PIN 7 
 #endif
 
 // --- SPI ---
 #ifndef PICO_DEFAULT_SPI
-#define PICO_DEFAULT_SPI 0
+#define PICO_DEFAULT_SPI 1
 #endif
 #ifndef PICO_DEFAULT_SPI_SCK_PIN
-#define PICO_DEFAULT_SPI_SCK_PIN 18
+#define PICO_DEFAULT_SPI_SCK_PIN 10
 #endif
 #ifndef PICO_DEFAULT_SPI_TX_PIN
-#define PICO_DEFAULT_SPI_TX_PIN 19
+#define PICO_DEFAULT_SPI_TX_PIN 11
 #endif
 #ifndef PICO_DEFAULT_SPI_RX_PIN
-#define PICO_DEFAULT_SPI_RX_PIN 16
+#define PICO_DEFAULT_SPI_RX_PIN 8
 #endif
 #ifndef PICO_DEFAULT_SPI_CSN_PIN
-#define PICO_DEFAULT_SPI_CSN_PIN 17
+#define PICO_DEFAULT_SPI_CSN_PIN 9
 #endif
 
 // --- FLASH ---
+
 #define PICO_BOOT_STAGE2_CHOOSE_W25Q080 1
 
 #ifndef PICO_FLASH_SPI_CLKDIV
-#define PICO_FLASH_SPI_CLKDIV 2
+#define PICO_FLASH_SPI_CLKDIV 2 
 #endif
 
 #ifndef PICO_FLASH_SIZE_BYTES
-#define PICO_FLASH_SIZE_BYTES (4 * 1024 * 1024)
+#define PICO_FLASH_SIZE_BYTES (1 * 1024 * 1024)
 #endif
+
+// Drive high to force power supply into PWM mode (lower ripple on 3V3 at light loads)
+// Linear regulator on Pybstick26
+//#define PICO_SMPS_MODE_PIN 23
 
 // All boards have B1 RP2040
-#ifndef PICO_RP2040_B0_SUPPORTED
-#define PICO_RP2040_B0_SUPPORTED 0
+#ifndef PICO_RP2040_B0_SUPPORTED 
+#define PICO_RP2040_B0_SUPPORTED  0
 #endif
 
 #endif
+// of #define _BOARDS_GARATRONIC_PYBSTICK26_RP2040_H

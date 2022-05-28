@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+ * Copyright (c) 2022 Raspberry Pi (Trading) Ltd.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -8,17 +8,17 @@
 // NOTE: THIS HEADER IS ALSO INCLUDED BY ASSEMBLER SO
 //       SHOULD ONLY CONSIST OF PREPROCESSOR DIRECTIVES
 // -----------------------------------------------------
+//
+//------------------------------------------------------------------------------------------
+// Board definition for the Solder Party RP2040 Stamp
+//
+// This header may be included by other board headers as "boards/solderparty_rp2040_stamp.h"
 
-#ifndef _BOARDS_PIMORONI_PICOLIPO_4MB_H
-#define _BOARDS_PIMORONI_PICOLIPO_4MB_H
+#ifndef _BOARDS_SOLDERPARTY_RP2040_STAMP_H
+#define _BOARDS_SOLDERPARTY_RP2040_STAMP_H
 
 // For board detection
-#define PIMORONI_PICOLIPO_4MB
-
-// --- BOARD SPECIFIC ---
-#define PICOLIPO_USER_SW_PIN 23
-#define PICOLIPO_VBUS_DETECT_PIN 24
-#define PICOLIPO_BAT_SENSE_PIN 29
+#define SOLDERPARTY_RP2040_STAMP
 
 // --- UART ---
 #ifndef PICO_DEFAULT_UART
@@ -31,21 +31,20 @@
 #define PICO_DEFAULT_UART_RX_PIN 1
 #endif
 
-// --- LED ---
-#ifndef PICO_DEFAULT_LED_PIN
-#define PICO_DEFAULT_LED_PIN 25
+// --- Neopixel ---
+#ifndef PICO_DEFAULT_WS2812_PIN
+#define PICO_DEFAULT_WS2812_PIN 21
 #endif
-// no PICO_DEFAULT_WS2812_PIN
 
 // --- I2C ---
 #ifndef PICO_DEFAULT_I2C
-#define PICO_DEFAULT_I2C 0
+#define PICO_DEFAULT_I2C       0
 #endif
 #ifndef PICO_DEFAULT_I2C_SDA_PIN
-#define PICO_DEFAULT_I2C_SDA_PIN 4
+#define PICO_DEFAULT_I2C_SDA_PIN   4
 #endif
 #ifndef PICO_DEFAULT_I2C_SCL_PIN
-#define PICO_DEFAULT_I2C_SCL_PIN 5
+#define PICO_DEFAULT_I2C_SCL_PIN   5
 #endif
 
 // --- SPI ---
@@ -73,10 +72,10 @@
 #endif
 
 #ifndef PICO_FLASH_SIZE_BYTES
-#define PICO_FLASH_SIZE_BYTES (4 * 1024 * 1024)
+#define PICO_FLASH_SIZE_BYTES (8 * 1024 * 1024)
 #endif
 
-// All boards have B1 RP2040
+// All production boards have B1 RP2040
 #ifndef PICO_RP2040_B0_SUPPORTED
 #define PICO_RP2040_B0_SUPPORTED 0
 #endif

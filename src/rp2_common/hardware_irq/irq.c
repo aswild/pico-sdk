@@ -135,9 +135,9 @@ irq_handler_t irq_get_exclusive_handler(uint num) {
 static uint16_t make_branch(uint16_t *from, void *to) {
     uint32_t ui_from = (uint32_t)from;
     uint32_t ui_to = (uint32_t)to;
-    uint32_t delta = (ui_to - ui_from - 4) / 2;
-    assert(!(delta >> 11u));
-    return (uint16_t)(0xe000 | (delta & 0x7ff));
+    int32_t delta = (int32_t)(ui_to - ui_from - 4);
+    assert(delta >= -2048 && delta <= 2046 && !(delta & 1));
+    return (uint16_t)(0xe000 | ((delta >> 1) & 0x7ff));
 }
 
 static void insert_branch_and_link(uint16_t *from, void *to) {
@@ -287,7 +287,6 @@ void irq_remove_handler(uint num, irq_handler_t handler) {
             struct irq_handler_chain_slot *prev_slot = NULL;
             struct irq_handler_chain_slot *existing_vtable_slot = remove_thumb_bit(vtable_handler);
             struct irq_handler_chain_slot *to_free_slot = existing_vtable_slot;
-            int8_t to_free_slot_index = get_slot_index(to_free_slot);
             while (to_free_slot->handler != handler) {
                 prev_slot = to_free_slot;
                 if (to_free_slot->link < 0) break;
@@ -325,7 +324,7 @@ void irq_remove_handler(uint num, irq_handler_t handler) {
                         }
                         // add slot back to free list
                         to_free_slot->link = irq_hander_chain_free_slot_head;
-                        irq_hander_chain_free_slot_head = to_free_slot_index;
+                        irq_hander_chain_free_slot_head = get_slot_index(to_free_slot);
                     } else {
                         // since we are the last slot we know that our inst3 hasn't executed yet, so we change
                         // it to bl to irq_handler_chain_remove_tail which will remove the slot.
