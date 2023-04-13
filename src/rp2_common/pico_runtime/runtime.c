@@ -57,7 +57,7 @@ void runtime_install_stack_guard(void *stack_bottom) {
     // mask is 1 bit per 32 bytes of the 256 byte range... clear the bit for the segment we want
     uint32_t subregion_select = 0xffu ^ (1u << ((addr >> 5u) & 7u));
     mpu_hw->ctrl = 5; // enable mpu with background default map
-    mpu_hw->rbar = (addr & (uint)~0xff) | 0x8 | 0;
+    mpu_hw->rbar = (addr & (uint)~0xff) | M0PLUS_MPU_RBAR_VALID_BITS | 0;
     mpu_hw->rasr = 1 // enable region
                    | (0x7 << 1) // size 2^(7 + 1) = 256
                    | (subregion_select << 8)
@@ -236,9 +236,9 @@ __attribute((weak)) int settimeofday(__unused const struct timeval *tv, __unused
 
 __attribute((weak)) int _times(struct tms *tms) {
 #if CLOCKS_PER_SEC >= 1000000
-    tms->tms_utime = to_us_since_boot(get_absolute_time()) * (CLOCKS_PER_SEC / 1000000);
+    tms->tms_utime = (clock_t)(to_us_since_boot(get_absolute_time()) * (CLOCKS_PER_SEC / 1000000));
 #else
-    tms->tms_utime = to_us_since_boot(get_absolute_time()) / (1000000 / CLOCKS_PER_SEC);
+    tms->tms_utime = (clock_t)(to_us_since_boot(get_absolute_time()) / (1000000 / CLOCKS_PER_SEC));
 #endif
     tms->tms_stime = 0;
     tms->tms_cutime = 0;
