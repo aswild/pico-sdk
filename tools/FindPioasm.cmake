@@ -32,6 +32,7 @@ if (NOT Pioasm_FOUND)
                 CMAKE_CACHE_ARGS "-DPIOASM_EXTRA_SOURCE_FILES:STRING=${PIOASM_EXTRA_SOURCE_FILES}"
                 BUILD_ALWAYS 1 # force dependency checking
                 INSTALL_COMMAND ""
+                EXCLUDE_FROM_ALL TRUE
                 )
     endif()
 
