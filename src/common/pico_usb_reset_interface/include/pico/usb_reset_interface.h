@@ -25,4 +25,14 @@
 // regular flash boot
 #define RESET_REQUEST_FLASH 0x02
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void pico_set_usb_reset_hook(void (*func)(void));
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

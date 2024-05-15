@@ -18,6 +18,12 @@
 #include "hardware/watchdog.h"
 #include "device/usbd_pvt.h"
 
+static void (*usb_reset_hook)(void) = NULL;
+
+void pico_set_usb_reset_hook(void (*func)(void)) {
+    usb_reset_hook = func;
+}
+
 static uint8_t itf_num;
 
 static void resetd_init(void) {
@@ -58,6 +64,9 @@ static bool resetd_control_xfer_cb(uint8_t __unused rhport, uint8_t stage, tusb_
                 gpio_mask = 1u << (request->wValue >> 9u);
             }
 #endif
+            if (usb_reset_hook) {
+                usb_reset_hook();
+            }
             reset_usb_boot(gpio_mask, (request->wValue & 0x7f) | PICO_STDIO_USB_RESET_BOOTSEL_INTERFACE_DISABLE_MASK);
             // does not return, otherwise we'd return true
         }
@@ -107,6 +116,9 @@ void tud_cdc_line_coding_cb(__unused uint8_t itf, cdc_line_coding_t const* p_lin
 #else
         const uint gpio_mask = 0u;
 #endif
+        if (usb_reset_hook) {
+            usb_reset_hook();
+        }
         reset_usb_boot(gpio_mask, PICO_STDIO_USB_RESET_BOOTSEL_INTERFACE_DISABLE_MASK);
     }
 }
